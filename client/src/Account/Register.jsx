@@ -4,11 +4,11 @@ import Logo from "../assets/Logo.png";
 const Register = () => {
   return (
     <div className="w-full h-full flex flex-col md:flex-row ">
-      <div className="relative md:w-1/2 h-full ">
+      <div className="relative w-full  md:w-1/2 h-full ">
         <img
           src={RegisterModel}
           alt=""
-          className="w-[85%] h-full object-fill "
+          className="w-full md:w-[85%] h-full "
         />
         <div className="absolute left-5 top-5 w-28">
           {" "}
@@ -16,7 +16,7 @@ const Register = () => {
         </div>
       </div>
       <div className="md:w-1/2 h-full flex  items-center">
-        <div className="w-3/4 p-10">
+        <div className="w-full sm:w-3/4 md:w-3/4 p-10">
           <h2 className="text-4xl font-medium mb-2">Create New Account</h2>
           <p className="text-sm text-gray-500 mb-2">Please enter details</p>
           <div className="w-full flex flex-col gap-2  my-2">

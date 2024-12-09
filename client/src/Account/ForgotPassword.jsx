@@ -6,11 +6,11 @@ import NewPassword from "./NewPassword";
 const ForgotPassword = () => {
   return (
     <div className="w-full h-full flex flex-col md:flex-row ">
-      <div className="relative md:w-1/2 h-full ">
+      <div className="relative w-full md:w-1/2 h-full ">
         <img
           src={ForgotModel}
           alt=""
-          className="w-[85%] h-full object-fill "
+          className="w-full md:w-[85%] h-full object-fill "
         />
         <div className="absolute left-5 top-5 w-28">
           {" "}
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
         </div>
       </div>
       <div className="md:w-1/2 h-full flex  items-center">
-        {/* <div className="w-3/4 p-10">
+        {/* <div className="w-full sm:w-3/4 md:w-3/4 p-10">
         <h2 className="my-2 flex items-center text-center gap-2"> <FaLessThan className="size-4"/>Back</h2>
           <h2 className="text-4xl font-medium mb-2">Forgot Password</h2>
           <p className="text-sm text-gray-500 mb-2">Enter your registered email address, we'll send you a code to reset your password</p>

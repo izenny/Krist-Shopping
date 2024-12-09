@@ -2,7 +2,7 @@ import React from "react";
 
 const NewPassword = () => {
   return (
-    <div className="w-3/4 p-10">
+    <div className="md:w-3/4 w-full  p-10">
       <h2 className="text-4xl font-medium mb-2">
         New Password
       </h2>
@@ -24,6 +24,9 @@ const NewPassword = () => {
             className="border-2 border-black rounded-lg w-full p-2"
           />
         </div>
+        <button className="w-full bg-black p-3 mt-2 rounded-lg hover:scale-105 text-white">
+            Change Password
+          </button>
       </div>
     </div>
   );
