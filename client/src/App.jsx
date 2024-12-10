@@ -6,11 +6,13 @@ import Otp from './Account/Otp'
 import Successfull from './Components/Common/Successfull'
 import Navbar from './Components/User/Navbar/Navbar'
 import CategoryBox from './Components/User/Navbar/CategoryBox'
+import Home from './Pages/User/Home/Home'
 
 const App = () => {
   return (
     <div className='w-full h-screen'>
-      <Navbar/>
+      {/* <Navbar/> */}
+      <Home/>
       {/* <CategoryBox/> */}
       {/* <Successfull/> */}
       {/* <Login/> */}
