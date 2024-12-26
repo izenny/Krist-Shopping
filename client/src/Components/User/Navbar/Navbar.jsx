@@ -74,7 +74,7 @@ const [showCategory,setShowCategory] = useState(false)
 
   return (
     <div className="w-full bg-white text-black shadow">
-      <div className="container mx-auto flex justify-between md:justify-around items-center py-4 px-6">
+      <div className="container mx-auto flex justify-between md:justify-around items-center py-4 px-6 md:px-0 lg:px-6">
         {/* Logo */}
         <div className="w-20">
           <img src={Logo} alt="Brand Logo" />
@@ -90,7 +90,7 @@ const [showCategory,setShowCategory] = useState(false)
               Shop
               
             </li>
-            {showCategory && (<div className="absolute bg-slate-100 rounded-lg shadow-lg  top-20 left-10 md:w-3/4">
+            {showCategory && (<div className="absolute z-10 bg-gray-50 rounded-lg shadow-lg  top-20 left-10 md:w-3/4">
                 <CategoryBox/>
               </div>)}
             <li className="cursor-pointer hover:scale-105 transition-transform font-serif">

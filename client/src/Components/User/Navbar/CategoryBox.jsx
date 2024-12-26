@@ -8,19 +8,19 @@ const CategoryBox = () => {
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Men</h2>
           <ul className="pl-2 space-y-3">
-            <li>T-Shirts</li>
-            <li>Casual Shirts</li>
-            <li>Formal Shirts</li>
-            <li>Jackets</li>
-            <li>Blazers & Coats</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">T-Shirts</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Casual Shirts</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Formal Shirts</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Jackets</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Blazers & Coats</li>
           </ul>
         </div>
         {/* indian and festive wear */}
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Indian & Festive Wear</h2>
           <ul className="pl-2 space-y-3">
-            <li>Kurtas & Kurta Sets</li>
-            <li>Sherwanis</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Kurtas & Kurta Sets</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Sherwanis</li>
           </ul>
         </div>
       </div>
@@ -29,19 +29,19 @@ const CategoryBox = () => {
         <div className="space-y-2">
             <h2 className="font-medium text-lg">Women</h2>
           <ul className="pl-2 space-y-3">
-            <li>Kurtas & Suits</li>
-            <li>Sarees</li>
-            <li>Ethnic Wear</li>
-            <li>Lehenga Cholis</li>
-            <li>Jackets</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Kurtas & Suits</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Sarees</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Ethnic Wear</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Lehenga Cholis</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Jackets</li>
           </ul>
         </div>
         {/* western wear  */}
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Western Wear</h2>
           <ul className="pl-2 space-y-3">
-            <li>Dresses</li>
-            <li>Jumpsuits</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Dresses</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Jumpsuits</li>
           </ul>
         </div>
       </div>
@@ -50,19 +50,19 @@ const CategoryBox = () => {
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Footwear</h2>
           <ul className="pl-2 space-y-3">
-            <li>Flats</li>
-            <li>Casual Shoes</li>
-            <li>Heels</li>
-            <li>Boots</li>
-            <li>Sports Shoes & Floaters</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Flats</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Casual Shoes</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Heels</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Boots</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Sports Shoes & Floaters</li>
           </ul>
         </div>
         {/* product features  */}
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Product Features</h2>
           <ul className="pl-2 space-y-3">
-            <li>360 product Viewer</li>
-            <li>Product with Video</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">360 product Viewer</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Product with Video</li>
           </ul>
         </div>
       </div>
@@ -71,14 +71,14 @@ const CategoryBox = () => {
         <div className="space-y-2">
           <h2 className="font-medium text-lg">Kids</h2>
           <ul className="pl-2 space-y-3">
-            <li>T-Shirts</li>
-            <li>Shirts</li>
-            <li>Jeans</li>
-            <li>Trousers</li>
-            <li>Party Wear</li>
-            <li>Innerwear & Thermal</li>
-            <li>Track Pants</li>
-            <li>Value Pack</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">T-Shirts</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Shirts</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Jeans</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Trousers</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Party Wear</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Innerwear & Thermal</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Track Pants</li>
+            <li className="hover:scale-105 cursor-pointer transition-transform duration-100">Value Pack</li>
           </ul>
         </div>
       </div>
