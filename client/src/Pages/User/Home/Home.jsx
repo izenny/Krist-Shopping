@@ -5,6 +5,8 @@ import Footer from '../../../Components/User/Footer/Footer'
 import ShopByCategories from './ShopByCategories'
 import DealOfTheMonth from './DealOfTheMonth'
 import Reviews from './Reviews'
+import PayAdCard from '../../../Components/User/Home/PayAdCard'
+import InstaStories from '../../../Components/User/Home/InstaStories'
 
 const Home = () => {
   return (
@@ -14,6 +16,8 @@ const Home = () => {
         <ShopByCategories/>
         <DealOfTheMonth/>
         <Reviews/>
+        <InstaStories/>
+        <PayAdCard/>
         <Footer/>
     </div>
   )
