@@ -7,7 +7,7 @@ const ProductView = () => {
     <div className="w-full flex flex-col md:flex-row gap-8 p-5">
       {/* Image Section */}
       <div className="md:w-1/2 flex flex-col items-center">
-        <div className="md:w-3/4 md:h-3/4 bg-gray-100 border rounded-lg overflow-hidden">
+        <div className="md:w-3/4 md:h-96 h-3/4 bg-gray-100 border rounded-lg overflow-hidden">
           <img
             src={image}
             alt="Product"

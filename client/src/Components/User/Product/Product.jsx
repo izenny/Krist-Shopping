@@ -114,7 +114,7 @@ import { LiaCartPlusSolid } from "react-icons/lia";
 
 const Product = () => {
   return (
-    <div className="m-5 flex gap-5">
+    <div className="p-5 w-full overflow-x-auto flex  gap-5">
 
       <div className="w-52">
         <div className="relative rounded-lg w-52 h-64 bg-slate-50 group">
