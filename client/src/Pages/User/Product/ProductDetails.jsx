@@ -95,6 +95,7 @@ import MoreDetails from "../../../Components/User/Product/MoreDetails";
 import Review from "../../../Components/User/Product/Review";
 import Product from "../../../Components/User/Product/Product";
 import PayAdCard from "../../../Components/User/Home/PayAdCard";
+import ProductReview from "../../../Components/User/Product/ProductReview";
 
 const ProductDetails = () => {
   // State to track the active tab
@@ -149,7 +150,7 @@ const ProductDetails = () => {
         <div className="bg-gray-100 mt-[-1px]  p-5 rounded-md shadow-md">
           {activeTab === "description" && <Description />}
           {activeTab === "moreDetails" && <MoreDetails />}
-          {activeTab === "reviews" && <Review />}
+          {activeTab === "reviews" && <ProductReview/>}
         </div>
       </div>
       <div className="p-10 w-full my-5">

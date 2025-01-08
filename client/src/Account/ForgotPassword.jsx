@@ -3,7 +3,9 @@ import ForgotModel from "../assets/ForgotModel.png";
 import Logo from "../assets/Logo.png";
 import { FaLessThan } from "react-icons/fa6";
 import NewPassword from "./NewPassword";
+import { useNavigate } from "react-router-dom";
 const ForgotPassword = () => {
+  const navigate =useNavigate()
   return (
     <div className="w-full h-full flex flex-col md:flex-row ">
       <div className="relative w-full md:w-1/2 h-full ">
@@ -12,7 +14,7 @@ const ForgotPassword = () => {
           alt=""
           className="w-full md:w-[85%] h-full object-fill "
         />
-        <div className="absolute left-5 top-5 w-28">
+        <div onClick={()=>navigate('/')} className="absolute left-5 top-5 w-28 cursor-pointer">
           {" "}
           <img src={Logo} alt="" className=" w-full h-full object-cover" />
         </div>

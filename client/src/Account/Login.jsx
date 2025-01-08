@@ -1,15 +1,20 @@
 import React from "react";
 import LoginModel from "../assets/LoginModel.png";
 import Logo from "../assets/Logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full h-full flex flex-col md:flex-row ">
       <div className="relative w-full md:w-1/2 h-full ">
         <img src={LoginModel} alt="" className="w-full md:w-[85%] h-full " />
-        <div className="absolute left-5 top-5 w-28">
+        <div
+          onClick={() => navigate("/")}
+          className="absolute left-5 top-5 w-28 cursor-pointer"
+        >
           {" "}
-          <img src={Logo} alt=""  className=" w-full h-full object-cover"/>
+          <img src={Logo} alt="" className=" w-full h-full object-cover" />
         </div>
       </div>
       <div className="md:w-1/2 h-full flex  items-center">
@@ -36,9 +41,20 @@ const Login = () => {
               />
             </div>
           </div>
-          <p className="text-xs text-end py-3 hover:text-blue-400 cursor-pointer ">
-            Forgot Password?
-          </p>
+          <div className="flex justify-between">
+            <p
+              onClick={() => navigate("/signup")}
+              className="text-xs text-start py-3 hover:text-blue-400 cursor-pointer "
+            >
+              Register
+            </p>
+            <p
+              onClick={() => navigate("/forgot-password")}
+              className="text-xs text-end py-3 hover:text-blue-400 cursor-pointer "
+            >
+              Forgot Password?
+            </p>
+          </div>
           <button className="w-full bg-black p-3 rounded-lg hover:scale-105 text-white">
             Login
           </button>
