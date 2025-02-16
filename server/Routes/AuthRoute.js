@@ -17,6 +17,6 @@ router.post("/logout", LogOut);
 router.post("/verify-email", VerifyEmail);
 router.post("/forgot-password", ForgotPassword);
 router.post("/reset-password/:token", ResetPassword);
-router.gert("/check-auth", VerifyToken, CheckAuth);
+router.get("/check-auth", VerifyToken, CheckAuth);
 
 module.exports = router;

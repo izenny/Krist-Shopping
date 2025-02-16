@@ -1,8 +1,13 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import image from "../../../assets/Post5.jpg";
-import { FaBell, FaBoxOpen, FaCreditCard, FaHeart, FaUser } from "react-icons/fa6";
+import {
+  FaBell,
+  FaBoxOpen,
+  FaCreditCard,
+  FaHeart,
+  FaUser,
+} from "react-icons/fa6";
 import { IoCog } from "react-icons/io5";
 import { LiaMapMarkerAltSolid } from "react-icons/lia";
 import Profile from "./Profile";
@@ -12,21 +17,29 @@ import ManageAddress from "../Address/ManageAddress";
 import PaymentCards from "../Payments/PaymentCards";
 import Notifications from "../Notifications/Notifications";
 import Settings from "../Settings/Settings";
+import { useSelector } from "react-redux";
 
 const MyProfile = () => {
   const [activeSection, setActiveSection] = useState("Personal Information");
+  const { user } = useSelector((state) => state.auth);
   const menuItems = [
-    { name: "Personal Information", icon: <FaUser />, path: "profile" },
+    { name: "Personal Information", icon: <FaUser />, path: "my-profile" },
     { name: "My Orders", icon: <FaBoxOpen />, path: "orders" },
     { name: "My Wishlists", icon: <FaHeart />, path: "wishlists" },
-    { name: "Manage Addresses", icon: <LiaMapMarkerAltSolid />, path: "addresses" },
+    {
+      name: "Manage Addresses",
+      icon: <LiaMapMarkerAltSolid />,
+      path: "addresses",
+    },
     { name: "Saved Cards", icon: <FaCreditCard />, path: "cards" },
     { name: "Notifications", icon: <FaBell />, path: "notifications" },
     { name: "Settings", icon: <IoCog />, path: "settings" },
   ];
 
+ 
+
   return (
-    <div className="p-10">
+    <div className="px-10 py-5">
       <h2 className="text-2xl font-bold mb-4">My Profile</h2>
       <div className="flex flex-row">
         {/* Sidebar */}
@@ -41,14 +54,14 @@ const MyProfile = () => {
             </div>
             <div>
               <p className="text-lg">Welcome 👋</p>
-              <h2 className="font-semibold text-lg">[User Name]</h2>
+              <h2 className="font-semibold text-lg">{user?.username}</h2>
             </div>
           </div>
           <div>
             {menuItems.map((item) => (
               <Link
-                to={item.path}
-                key={item.name}
+                to={item?.path}
+                key={item?.name}
                 onClick={() => setActiveSection(item.name)}
                 className={`cursor-pointer flex gap-4 items-center text-lg font-medium py-4 px-5 ${
                   activeSection === item.name
@@ -67,8 +80,8 @@ const MyProfile = () => {
         {/* Content Section */}
         <div className="w-3/4 p-5">
           <Routes>
-            <Route index element={<Profile />} /> {/* Default Content */}
-            <Route path="profile" element={<Profile />} />
+            {/* <Route index element={<Profile />} /> Default Content */}
+            <Route index path="my-profile" element={<Profile />} />
             <Route path="orders" element={<MyOrders />} />
             <Route path="wishlists" element={<MyWhishlist />} />
             <Route path="addresses" element={<ManageAddress />} />
@@ -83,4 +96,3 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
-

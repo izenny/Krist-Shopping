@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { CiHeart, CiSearch } from "react-icons/ci";
+import { CiHeart, CiSearch, CiUser } from "react-icons/ci";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import Logo from "../../../assets/Logo.png";
 import CategoryBox from "./CategoryBox";
 import MiniCart from "../Cart/MiniCart";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FaUser } from "react-icons/fa6";
+import { logoutUser } from "../../../Redux/AuthSlice";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,8 +17,12 @@ const Navbar = () => {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const toggleShowCategory = () => setShowCategory(!showCategory);
   const toggleShowMiniCart = () => setShowMiniCart(!showMiniCart);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  // console.log(user);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   return (
     <div className="w-full bg-white text-black shadow">
       <div className="container mx-auto flex justify-between md:justify-around items-center py-4 px-6 md:px-0 lg:px-6">
@@ -27,7 +34,10 @@ const Navbar = () => {
         {/* Navigation Links (Desktop) */}
         <div className="hidden md:flex">
           <ul className="flex space-x-8">
-            <li onClick={() => navigate('/')} className="cursor-pointer hover:scale-105 transition-transform font-serif">
+            <li
+              onClick={() => navigate("/")}
+              className="cursor-pointer hover:scale-105 transition-transform font-serif"
+            >
               Home
             </li>
             <li
@@ -73,17 +83,36 @@ const Navbar = () => {
             aria-label="Shopping Bag"
           >
             <LiaShoppingBagSolid />
-            
           </div>
           {showMiniCart && (
-              <div className="absolute  z-20 bg-white border rounded-lg shadow-lg p-4 md:w-2/5 lg:w-2/4 top-16   md:right-36">
-                <h3 className="font-semibold mb-2">Your Cart</h3>
-                <MiniCart />
+            <div className="absolute  z-20 bg-white border rounded-lg shadow-lg p-4 md:w-2/5 lg:w-2/4 top-16   md:right-36">
+              <h3 className="font-semibold mb-2">Your Cart</h3>
+              <MiniCart />
+            </div>
+          )}
+          {isAuthenticated && (
+            <Link to="my-profile">
+              <div className="border flex gap-2 justify-center items-center p-2 rounded-lg text-xl cursor-pointer">
+                <CiUser />{" "}
+                <h2 className="text-base capitalize">{user?.username}</h2>
               </div>
-            )}
-          <button onClick={() => navigate('/login')} className="bg-black p-2 w-20 rounded-lg hover:scale-105 transition-transform text-white">
-            Login
-          </button>
+            </Link>
+          )}
+          {!isAuthenticated ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-black p-2 w-20 rounded-lg hover:scale-105 transition-transform text-white"
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              onClick={() => dispatch(logoutUser())}
+              className="bg-black p-2 w-20 rounded-lg hover:scale-105 transition-transform text-white"
+            >
+              Logout
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Icon */}
@@ -102,7 +131,12 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="bg-white shadow-lg   md:hidden">
           <ul className="flex flex-col space-y-2 p-4">
-            <li onClick={() => navigate('/')} className="cursor-pointer hover:text-gray-500">Home</li>
+            <li
+              onClick={() => navigate("/")}
+              className="cursor-pointer hover:text-gray-500"
+            >
+              Home
+            </li>
             <li
               onClick={toggleShowCategory}
               className="cursor-pointer hover:text-gray-500"
@@ -131,30 +165,31 @@ const Navbar = () => {
               >
                 <CiHeart />
               </div>
-              {/* <div
-                onClick={toggleShowMiniCart}
-                className="relative p-2 w-10 border rounded-lg text-xl cursor-pointer"
-                aria-label="Shopping Bag"
-              >
-                <LiaShoppingBagSolid />
-                {showCategory && (
-                  <div className="top-20  left-10 md:w-full">
-                    <CategoryBox />
-                  </div>
-                )}
-              </div> */}
+
               <div
                 onClick={toggleShowMiniCart}
-                className="relative p-2 border rounded-lg text-xl hover:scale-105 transition-transform cursor-pointer"
+                className="relative p-2 w-10  border rounded-lg text-xl hover:scale-105 transition-transform cursor-pointer"
                 aria-label="Shopping Bag"
               >
                 <LiaShoppingBagSolid />
                 {showMiniCart && <MiniCart />}
               </div>
             </div>
-            <button onClick={() => navigate('/login')} className="bg-black p-2 w-20 rounded-lg hover:scale-105 transition-transform text-white">
-              Login
-            </button>
+            {!isAuthenticated ? (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-black p-2 w-20 rounded-lg hover:scale-105 transition-transform text-white"
+              >
+                Login
+              </button>
+            ) : (
+              <Link to="/my-profile">
+                <div className="border w-fit flex gap-2 justify-center items-center p-2 rounded-lg text-xl cursor-pointer">
+                  <CiUser />{" "}
+                  <h2 className="text-base capitalize">{user?.username}</h2>
+                </div>
+              </Link>
+            )}
           </ul>
         </div>
       )}

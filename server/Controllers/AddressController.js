@@ -14,7 +14,9 @@ exports.createAddress = async (req, res) => {
     postalCode,
     country,
   } = req.body;
-  const { user } = req.Address;
+  const  _id  = req.user._id;
+  // console.log("User ID: ", _id);
+  
   if (
     !name ||
     !phone ||
@@ -27,7 +29,7 @@ exports.createAddress = async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
   try {
-    const userAddress = await Address.findOne({ user });
+    const userAddress = await Address.findOne({ user: _id });
     if (userAddress) {
       userAddress.addresses.push({
         name,
@@ -45,7 +47,7 @@ exports.createAddress = async (req, res) => {
         .json({ message: "Address added successfully", userAddress });
     } else {
       const newAddress = new Address({
-        user,
+        user : _id,
         addresses: [
           {
             name,
@@ -74,12 +76,9 @@ exports.createAddress = async (req, res) => {
 // get all addresses
 
 exports.getAddresses = async (req, res) => {
-  const { user } = req.params;
+  const  _id  = req.user._id;
   try {
-    const userAddress = await Address.findOne({ user }).populate(
-      "user",
-      "email"
-    );
+    const userAddress = await Address.findOne({ user : _id})
     if (!userAddress) {
       return res.status(404).json({ message: "No address found" });
     }

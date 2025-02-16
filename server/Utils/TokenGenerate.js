@@ -2,12 +2,22 @@ const JWT = require("jsonwebtoken");
 
 exports.generateToken = (res, userId) => {
   const token = JWT.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn:"1hr",
+    expiresIn: "5h", // Use "5h" for clarity instead of "5hr"
   });
+
+  // Set the cookie
   res.cookie("token", token, {
-    httpOnly: true, // This cookie cannot be accessed by client side JavaScript
-    secure: process.env.NODE_ENV === "production" ? true : false, // This cookie can only be sent over https
-    sameSite: "strict", // This cookie is not sent along with any cross-site requests
-    maxAge: 1 * 60 * 60 * 1000, // 1 hours
+    httpOnly: true, // Prevent access via JavaScript
+    secure: process.env.NODE_ENV === "production", // Ensure HTTPS in production
+    sameSite: "strict", // Prevent CSRF attacks
+    maxAge: 5 * 60 * 60 * 1000, // 5 hours (comment fixed)
   });
+
+  return token; // Ensure this is used properly in the calling function
+};
+
+
+
+exports.GenerateOtp = () => { // Fixed function name
+  return Math.floor(10000 + Math.random() * 90000).toString(); // Generates a 5-digit OTP
 };
