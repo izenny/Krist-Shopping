@@ -5,7 +5,7 @@ import Footer from "../Components/User/Footer/Footer";
 
 const PublicLayout = () => {
   return (
-    <div>
+    <div className="">
       <div className="h-full w-full">
         <Navbar />
         <div className="min-h-screen">

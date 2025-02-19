@@ -88,23 +88,118 @@
 
 // export default ProductDetails;
 
-import React, { useState } from "react";
+// import React, { useState } from "react";
+// import ProductView from "../../../Components/User/Product/ProductView";
+// import Description from "../../../Components/User/Product/Description";
+// import MoreDetails from "../../../Components/User/Product/MoreDetails";
+// import Product from "../../../Components/User/Product/Product";
+// import PayAdCard from "../../../Components/User/Home/PayAdCard";
+// import ProductReview from "../../../Components/User/Product/ProductReview";
+
+// const ProductDetails = () => {
+//   // State to track the active tab
+//   const [activeTab, setActiveTab] = useState("description");
+
+//   return (
+//     <div className="w-full mt-5">
+//       {/* Product View */}
+//       <ProductView />
+
+//       {/* Folder-Style Tabs */}
+//       <div className="w-full md:px-10 px-2 ">
+//         <div className="flex gap-5">
+//           {/* Description Tab */}
+//           <button
+//             className={`relative md:text-xl font-medium px-4 py-2 rounded-t-md ${
+//               activeTab === "description"
+//                 ? "bg-gray-100 shadow-inner"
+//                 : "bg-white"
+//             }`}
+//             onClick={() => setActiveTab("description")}
+//           >
+//             Description
+//           </button>
+
+//           {/* More Details Tab */}
+//           <button
+//             className={`relative md:text-xl font-medium px-4 py-2 rounded-t-md ${
+//               activeTab === "moreDetails"
+//                 ? "bg-gray-100 shadow-inner "
+//                 : "bg-white"
+//             }`}
+//             onClick={() => setActiveTab("moreDetails")}
+//           >
+//             More Details
+//           </button>
+
+//           {/* Reviews Tab */}
+//           <button
+//             className={`relative md:text-xl font-medium px-4 py-2 rounded-t-md ${
+//               activeTab === "reviews"
+//                 ? "bg-gray-100 shadow-inner   "
+//                 : "bg-white"
+//             }`}
+//             onClick={() => setActiveTab("reviews")}
+//           >
+//             Reviews
+//           </button>
+//         </div>
+
+//         {/* Tab Content */}
+//         <div className="bg-gray-100 mt-[-1px]  p-5 rounded-md shadow-md">
+//           {activeTab === "description" && <Description />}
+//           {activeTab === "moreDetails" && <MoreDetails />}
+//           {activeTab === "reviews" && <ProductReview />}
+//         </div>
+//       </div>
+//       <div className="p-10 w-full my-5">
+//         <h2 className="text-2xl">Related Products</h2>
+//         <Product />
+//       </div>
+//       <div className=" w-full ">
+//         <PayAdCard />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProductDetails;
+
+//22222222222222`````````
+
+import React, { useEffect, useState } from "react";
 import ProductView from "../../../Components/User/Product/ProductView";
 import Description from "../../../Components/User/Product/Description";
 import MoreDetails from "../../../Components/User/Product/MoreDetails";
-import Review from "../../../Components/User/Product/Review";
 import Product from "../../../Components/User/Product/Product";
 import PayAdCard from "../../../Components/User/Home/PayAdCard";
 import ProductReview from "../../../Components/User/Product/ProductReview";
+import { useParams } from "react-router-dom";
+import { FetchProductById } from "../../../ApiCall/ProductApiCalls";
 
 const ProductDetails = () => {
   // State to track the active tab
   const [activeTab, setActiveTab] = useState("description");
+  const [product, setProduct] = useState({});
+  const id = useParams();
+  // console.log(id);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await FetchProductById(id);
+        setProduct(response?.product);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProduct();
+  }, [id]);
 
   return (
     <div className="w-full mt-5">
       {/* Product View */}
-      <ProductView />
+      <ProductView product={product} />
 
       {/* Folder-Style Tabs */}
       <div className="w-full md:px-10 px-2 ">
@@ -148,17 +243,17 @@ const ProductDetails = () => {
 
         {/* Tab Content */}
         <div className="bg-gray-100 mt-[-1px]  p-5 rounded-md shadow-md">
-          {activeTab === "description" && <Description />}
-          {activeTab === "moreDetails" && <MoreDetails />}
-          {activeTab === "reviews" && <ProductReview/>}
+          {activeTab === "description" && <Description description={product?.description}/>}
+          {activeTab === "moreDetails" && <MoreDetails product={product}/>}
+          {activeTab === "reviews" && <ProductReview />}
         </div>
       </div>
       <div className="p-10 w-full my-5">
         <h2 className="text-2xl">Related Products</h2>
-        <Product/>
+        <Product />
       </div>
       <div className=" w-full ">
-        <PayAdCard/>
+        <PayAdCard />
       </div>
     </div>
   );

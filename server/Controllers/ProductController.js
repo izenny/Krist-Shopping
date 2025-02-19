@@ -3,8 +3,18 @@ const User = require("../Models/UserSchema");
 // create product
 
 exports.createProduct = async (req, res) => {
-  const { name,title, description, price,orginalprice, category, stock, images, offer, discount } =
-    req.body;
+  const {
+    name,
+    title,
+    description,
+    price,
+    orginalprice,
+    category,
+    stock,
+    images,
+    offer,
+    discount,
+  } = req.body;
   try {
     const newProduct = new Product({
       name,
@@ -33,10 +43,66 @@ exports.createProduct = async (req, res) => {
 
 //get all products
 
+// get products with filters all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.status(200).json({ success: true, products });
+    let {
+      page = 1,
+      limit = 20,
+      category,
+      minPrice,
+      maxPrice,
+      color,
+      size,
+      gender
+    } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    let filter = {};
+
+    if (category) {
+      const categoriesArray = category.split(",").map((c) => new RegExp(c, "i"));
+      filter.category = { $in: categoriesArray };
+    }
+    // Price filtering
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+    }
+
+    // Case-insensitive color filtering (inside stock array)
+    if (color) {
+      const colorsArray = color.split(",").map((c) => new RegExp(c, "i"));
+      filter["stock.color"] = { $in: colorsArray };
+    }
+
+    // Case-insensitive size filtering (inside stock array)
+    if (size) {
+      const sizesArray = size.split(",").map((s) => new RegExp(s, "i"));
+      filter["stock.size"] = { $in: sizesArray };
+    }
+    if (gender) {
+      const genderArray = gender.split(",").map((g) => new RegExp(g, "i"));
+      filter.gender = { $in: genderArray };
+    }
+
+    // Count total matching products
+    const totalProducts = await Product.countDocuments(filter);
+
+    // Fetch filtered products with pagination
+    const products = await Product.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      products,
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.error("Error in getAllProducts:", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -47,6 +113,9 @@ exports.getAllProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   const { id } = req.params;
+
+  // console.log(id);
+
   try {
     const product = await Product.findById(id);
     if (!product) {
@@ -282,48 +351,55 @@ exports.searchProducts = async (req, res) => {
   }
 };
 
-
 // Filter products based on multiple criteria
 exports.filterProducts = async (req, res) => {
-    const { category, minPrice, maxPrice, minRating, maxRating, minDiscount, maxDiscount, offer } = req.query;
-  
-    try {
-      // Build dynamic filter object
-      const filters = {};
-  
-      if (category) {
-        filters.category = category;
-      }
-  
-      if (minPrice || maxPrice) {
-        filters.price = {};
-        if (minPrice) filters.price.$gte = parseFloat(minPrice);
-        if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
-      }
-  
-      if (minRating || maxRating) {
-        filters.ratings = {};
-        if (minRating) filters.ratings.$gte = parseFloat(minRating);
-        if (maxRating) filters.ratings.$lte = parseFloat(maxRating);
-      }
-  
-      if (minDiscount || maxDiscount) {
-        filters.discount = {};
-        if (minDiscount) filters.discount.$gte = parseFloat(minDiscount);
-        if (maxDiscount) filters.discount.$lte = parseFloat(maxDiscount);
-      }
-  
-      if (offer) {
-        filters.offer = { $regex: offer, $options: "i" }; // Case-insensitive matching for offer
-      }
-  
-      // Query the database with filters
-      const products = await Product.find(filters);
-  
-      res.status(200).json({ success: true, products });
-    } catch (error) {
-      console.error("Error in filterProducts:", error.message);
-      res.status(500).json({ success: false, message: "Internal server error" });
+  const {
+    category,
+    minPrice,
+    maxPrice,
+    minRating,
+    maxRating,
+    minDiscount,
+    maxDiscount,
+    offer,
+  } = req.query;
+
+  try {
+    // Build dynamic filter object
+    const filters = {};
+
+    if (category) {
+      filters.category = category;
     }
-  };
-  
+
+    if (minPrice || maxPrice) {
+      filters.price = {};
+      if (minPrice) filters.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
+    }
+
+    if (minRating || maxRating) {
+      filters.ratings = {};
+      if (minRating) filters.ratings.$gte = parseFloat(minRating);
+      if (maxRating) filters.ratings.$lte = parseFloat(maxRating);
+    }
+
+    if (minDiscount || maxDiscount) {
+      filters.discount = {};
+      if (minDiscount) filters.discount.$gte = parseFloat(minDiscount);
+      if (maxDiscount) filters.discount.$lte = parseFloat(maxDiscount);
+    }
+
+    if (offer) {
+      filters.offer = { $regex: offer, $options: "i" }; // Case-insensitive matching for offer
+    }
+
+    // Query the database with filters
+    const products = await Product.find(filters);
+
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    console.error("Error in filterProducts:", error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};

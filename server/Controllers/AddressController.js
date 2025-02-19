@@ -145,21 +145,23 @@ exports.updateAddress = async (req, res) => {
 };
 
 exports.deleteAddress = async (req, res) => {
-  const { user, addressId } = req.params;
+  const user = req.user._id;
+  const {address }= req.params;
+console.log(user,address);
 
   try {
     // Find the user address by user ID and addressId
     const addressData = await Address.findOne({
       user,
-      "addresses._id": addressId,
+      "addresses._id": address,
     });
 
     if (!addressData) {
       return res.status(404).json({ message: "No address found" });
     }
 
-    // Pull out the address using its _id
-    addressData.addresses.id(addressId).remove();
+    addressData.addresses = addressData.addresses.filter((addr) => addr._id.toString() !== address);
+
 
     // Save the updated address document
     await addressData.save();

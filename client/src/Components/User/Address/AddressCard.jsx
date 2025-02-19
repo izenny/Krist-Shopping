@@ -60,7 +60,7 @@ const AddressCard = ({ address, onSelect, onDelete, isSelected }) => {
           <p className="pl-6">{`${address?.city}, ${address?.state} - ${address?.postalCode}`}</p>
         </div>
       </div>
-      <div className="flex justify-around gap-2 mt-4">
+      {onDelete && <div className="flex justify-around gap-2 mt-4">
         <button
           className="px-4 py-2 w-1/3 bg-black text-white rounded-md"
           onClick={() => alert(`Editing address: ${address?.name}`)}
@@ -69,11 +69,11 @@ const AddressCard = ({ address, onSelect, onDelete, isSelected }) => {
         </button>
         <button
           className="px-4 py-2 w-1/3 bg-black hover:bg-red-600 text-white rounded-md"
-          onClick={() => onDelete(address)}
+          onClick={() => onDelete(address._id)}
         >
           Delete
         </button>
-      </div>
+      </div>}
     </div>
   );
 };

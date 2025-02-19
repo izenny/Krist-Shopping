@@ -191,7 +191,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen ">
       <Routes>
         <Route element={<Protect />}>
           {/* Public Routes */}

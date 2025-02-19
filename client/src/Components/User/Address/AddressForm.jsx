@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const AddressForm = ({ onSubmit }) => {
+const AddressForm = ({ onSubmit ,isLoading}) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -22,14 +22,14 @@ const AddressForm = ({ onSubmit }) => {
   };
 
   return (
-    <div className="w-full px-10 border py-5 rounded-lg text-center ">
-      <h2 className="text-xl font-semibold text-center">Add New Address</h2>
+    <div className="w-full px-10 border py-4 rounded-lg text-center ">
+      <h2 className="text-xl font-semibold my-2 text-center">Add New Address</h2>
 
       <form
         onSubmit={handleSubmit}
-        className="gap-5 p-5 text-left grid md:grid-cols-2 mx-auto bg-white  "
+        className="gap-x-5 gap-y-3 px-5 text-left grid md:grid-cols-2 mx-auto bg-white  "
       >
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Name</label>
           <input
             name="name"
@@ -40,7 +40,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Phone</label>
           <input
             name="phone"
@@ -51,7 +51,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Address Line 1</label>
           <input
             name="addressLine1"
@@ -62,7 +62,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Address Line 2</label>
           <input
             name="addressLine2"
@@ -72,7 +72,7 @@ const AddressForm = ({ onSubmit }) => {
             placeholder="Apt 4B"
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">City</label>
           <input
             name="city"
@@ -82,7 +82,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">State</label>
           <input
             name="state"
@@ -92,7 +92,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Postal Code</label>
           <input
             name="postalCode"
@@ -102,7 +102,7 @@ const AddressForm = ({ onSubmit }) => {
             required
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <label className="block font-medium">Country</label>
           <input
             name="country"
@@ -113,12 +113,20 @@ const AddressForm = ({ onSubmit }) => {
           />
         </div>
         <div className="col-span-2 flex justify-center">
-          <button
+          {!isLoading ? (<button
             type="submit"
             className="w-full md:w-1/2 bg-black text-white py-2 rounded-lg"
           >
             Submit
+          </button>):(
+            <button
+            // type="submit"
+            disabled={isLoading}
+            className="w-full md:w-1/2 bg-black text-white py-2 rounded-lg"
+          >
+            Submiting
           </button>
+          )}
         </div>
       </form>
     </div>

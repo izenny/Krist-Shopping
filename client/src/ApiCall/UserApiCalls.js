@@ -6,15 +6,15 @@ export const fetchUserDetails = async () => {
   try {
     const response = await axiosInstance.get(`user/userdata`);
     console.log("User details:", response.data);
-    
+
     return response.data;
   } catch (error) {
     console.error("Error in fetching user details:", error);
     return null;
   }
-}
+};
 
-// fetch user address 
+// fetch user address
 
 export const fetchUserAddress = async () => {
   try {
@@ -25,7 +25,7 @@ export const fetchUserAddress = async () => {
     console.error("Error in fetching user address:", error);
     return null;
   }
-}
+};
 
 // add user address
 
@@ -38,4 +38,23 @@ export const addUserAddress = async (address) => {
     console.error("Error in adding address:", error);
     return null;
   }
-}
+};
+
+// delete user address
+
+export const deleteUserAddress = async (address) => {
+  console.log(address);
+
+  try {
+    const response = await axiosInstance.delete(
+      `user/deleteaddress/${address}`
+    );
+    console.log("Address deleted:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in deleting address:", error);
+    return null;
+  }
+};
+
+//fetch Products
