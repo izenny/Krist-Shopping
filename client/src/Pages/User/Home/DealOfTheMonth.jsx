@@ -5,12 +5,13 @@ import homemodel from "../../../assets/homemodel.png";
 import DealOfTheDay from '../../../assets/download4.jpg'
 import { LuCircleFadingArrowUp } from "react-icons/lu";
 import { RiArrowRightUpBoxLine, RiArrowRightUpLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 
 const DealOfTheMonth = () => {
   // Set the initial timer duration (e.g., 2 days in seconds)
   const [timeLeft, setTimeLeft] = useState(2 * 24 * 60 * 60); // 2 days
-
+  const nagivigate = useNavigate()
   // Countdown logic
   useEffect(() => {
     const timer = setInterval(() => {
@@ -68,7 +69,7 @@ const DealOfTheMonth = () => {
               <p className="text-sm">Sec{secs !== 1 ? "s" : ""}</p>
             </div>
           </div>
-          <button className="bg-black flex justify-center items-center gap-2 text-white p-3 rounded-md text-sm px-6 hover:bg-gray-800">
+          <button onClick={()=>nagivigate('/product-listing')} className="bg-black flex justify-center items-center gap-2 text-white p-3 rounded-md text-sm px-6 hover:bg-gray-800">
             View All Products <RiArrowRightUpLine/>
           </button>
         </div>

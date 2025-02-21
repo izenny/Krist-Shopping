@@ -9,11 +9,11 @@ const Product = ({ products, loading }) => {
   const navigate = useNavigate();
 // loading = true
   return (
-    <div className="p-5 w-full overflow-x-auto flex flex-wrap rounded-lg shadow-sm gap-5 ">
+    <div className="p-4 my-5 border w-full overflow-x-auto flex flex-wrap items-center justify-center rounded-lg shadow-md gap-5 ">
       {loading ? (
         // Show 5 skeleton loaders
         Array.from({ length: 10 }).map((_, index) => (
-          <div key={index} className="w-52 space-y-2">
+          <div key={index} className="w-52  space-y-2">
             <div className="relative rounded-lg w-52 h-64 bg-gray-200 animate-pulse"></div>
             <div className="space-y-2 pl-1">
               <div className="h-4 bg-gray-300 rounded w-3/4 animate-pulse"></div>
@@ -23,8 +23,8 @@ const Product = ({ products, loading }) => {
           </div>
         ))
       ) : products?.length > 0 ? (
-        products.map((product) => (
-          <div key={product.id} className="w-52">
+        products?.map((product) => (
+          <div key={product?._id} className="w-52">
             <div className="relative rounded-lg w-52 h-64 bg-slate-50 overflow-hidden group">
               <img
                 src={product.images[0].url}
@@ -53,12 +53,12 @@ const Product = ({ products, loading }) => {
 
             {/* Product Details */}
             <div onClick={() => navigate(`/product-details/${product._id}`)} className="space-y-0.5 pl-1 cursor-pointer">
-              <h2 className="font-medium">{product.name}</h2>
+              <h2 className="font-medium line-clamp-2 ">{product.name}</h2>
               <p className="text-sm line-clamp-2">{product.description}</p>
               <p className="text-sm">
                 ${product.price}{" "}
                 <span className="line-through text-slate-600 pl-2">
-                  ${product.oldPrice}
+                  ${product.orginalprice}
                 </span>
               </p>
             </div>

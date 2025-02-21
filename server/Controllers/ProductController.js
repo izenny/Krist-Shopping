@@ -44,6 +44,142 @@ exports.createProduct = async (req, res) => {
 //get all products
 
 // get products with filters all products
+// exports.getAllProducts = async (req, res) => {
+//   try {
+//     let {
+//       page = 1,
+//       limit = 20,
+//       category,
+//       minPrice,
+//       maxPrice,
+//       color,
+//       size,
+//       gender
+//     } = req.query;
+//     page = parseInt(page);
+//     limit = parseInt(limit);
+// console.log(gender);
+
+//     let filter = {};
+
+//     if (category) {
+//       const categoriesArray = category.split(",").map((c) => new RegExp(c, "i"));
+//       filter.category = { $in: categoriesArray };
+//     }
+//     // Price filtering
+//     if (minPrice || maxPrice) {
+//       filter.price = {};
+//       if (minPrice) filter.price.$gte = parseFloat(minPrice);
+//       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+//     }
+
+//     // Case-insensitive color filtering (inside stock array)
+//     if (color) {
+//       const colorsArray = color.split(",").map((c) => new RegExp(c, "i"));
+//       filter["stock.color"] = { $in: colorsArray };
+//     }
+
+//     // Case-insensitive size filtering (inside stock array)
+//     if (size) {
+//       const sizesArray = size.split(",").map((s) => new RegExp(s, "i"));
+//       filter["stock.size"] = { $in: sizesArray };
+//     }
+//     if (gender) {
+//       const genderArray = gender.split(",").map((g) => new RegExp(g, "i"));
+//       filter.gender = { $in: genderArray };
+//     }
+
+//     // Count total matching products
+//     const totalProducts = await Product.countDocuments(filter);
+
+//     // Fetch filtered products with pagination
+//     const products = await Product.find(filter)
+//       .skip((page - 1) * limit)
+//       .limit(limit);
+
+//     res.status(200).json({
+//       success: true,
+//       products,
+//       totalProducts,
+//       totalPages: Math.ceil(totalProducts / limit),
+//       currentPage: page,
+//     });
+//   } catch (error) {
+//     console.error("Error in getAllProducts:", error.message);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// // };
+// exports.getAllProducts = async (req, res) => {
+//   try {
+//     let {
+//       page = 1,
+//       limit = 20,
+//       category,
+//       minPrice,
+//       maxPrice,
+//       color,
+//       size,
+//       gender,
+//     } = req.query;
+//     page = parseInt(page);
+//     limit = parseInt(limit);
+
+//     let filter = {};
+
+//     // Category filtering
+    // if (category) {
+    //   const categoriesArray = category.split(",");
+    //   filter.category = { $in: categoriesArray };
+    // }
+//     console.log(category);
+
+//     // Price filtering
+//     if (minPrice || maxPrice) {
+//       filter.price = {};
+//       if (minPrice) filter.price.$gte = parseFloat(minPrice);
+//       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+//     }
+
+//     // Color filtering
+//     if (color) {
+//       const colorsArray = color.split(",");
+//       filter["stock.color"] = { $in: colorsArray };
+//     }
+
+//     // Size filtering
+//     if (size) {
+//       const sizesArray = size.split(",");
+//       filter["stock.size"] = { $in: sizesArray };
+//     }
+
+//     // ✅ Fix Gender Filtering (Case-Insensitive & Exact Match)
+//     if (gender) {
+//       const genderArray = gender
+//         .split(",")
+//         .map((g) => new RegExp(`^${g}$`, "i"));
+//       filter.gender = { $in: genderArray };
+//     }
+
+//     // Count total matching products
+//     const totalProducts = await Product.countDocuments(filter);
+
+//     // Fetch filtered products with pagination
+//     const products = await Product.find(filter)
+//       .skip((page - 1) * limit)
+//       .limit(limit);
+
+//     res.status(200).json({
+//       success: true,
+//       products,
+//       totalProducts,
+//       totalPages: Math.ceil(totalProducts / limit),
+//       currentPage: page,
+//     });
+//   } catch (error) {
+//     console.error("Error in getAllProducts:", error.message);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };
 exports.getAllProducts = async (req, res) => {
   try {
     let {
@@ -56,42 +192,61 @@ exports.getAllProducts = async (req, res) => {
       size,
       gender
     } = req.query;
+
     page = parseInt(page);
     limit = parseInt(limit);
 
     let filter = {};
 
     if (category) {
-      const categoriesArray = category.split(",").map((c) => new RegExp(c, "i"));
-      filter.category = { $in: categoriesArray };
+      const categoriesArray = category.split(",").map((c) => c.trim()); // Trim spaces
+      filter.category = { 
+        $in: categoriesArray.map((c) => new RegExp(`^${c}$`, "i")) // Case-insensitive regex
+      };
     }
-    // Price filtering
+    
+    
+
+    // ✅ Fix: Price Filtering
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = parseFloat(minPrice);
       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
     }
 
-    // Case-insensitive color filtering (inside stock array)
+    // ✅ Fix: Case-insensitive Color Filtering (Inside `stock` Array)
     if (color) {
-      const colorsArray = color.split(",").map((c) => new RegExp(c, "i"));
-      filter["stock.color"] = { $in: colorsArray };
+      const colorsArray = color.split(",").map((c) => c.trim());
+      filter.stock = { 
+        $elemMatch: { 
+          color: { $regex: new RegExp(`^(${colorsArray.join("|")})$`, "i") } 
+        } 
+      };
     }
 
-    // Case-insensitive size filtering (inside stock array)
+    // ✅ Fix: Case-insensitive Size Filtering (Inside `stock` Array)
     if (size) {
-      const sizesArray = size.split(",").map((s) => new RegExp(s, "i"));
-      filter["stock.size"] = { $in: sizesArray };
-    }
-    if (gender) {
-      const genderArray = gender.split(",").map((g) => new RegExp(g, "i"));
-      filter.gender = { $in: genderArray };
+      const sizesArray = size.split(",").map((s) => s.trim());
+      filter.stock = { 
+        $elemMatch: { 
+          size: { $regex: new RegExp(`^(${sizesArray.join("|")})$`, "i") } 
+        } 
+      };
     }
 
-    // Count total matching products
+    // ✅ Fix: Case-insensitive Gender Filtering
+    if (gender) {
+      const genderArray = gender.split(",").map((g) => g.trim());
+      filter.gender = { $in: genderArray.map((g) => new RegExp(`^${g}$`, "i")) };
+    }
+
+    // ✅ Debugging: Log the Applied Filter
+    console.log("Final Applied Filter:", JSON.stringify(filter, null, 2));
+
+    // ✅ Count Matching Products
     const totalProducts = await Product.countDocuments(filter);
 
-    // Fetch filtered products with pagination
+    // ✅ Fetch Filtered Products with Pagination
     const products = await Product.find(filter)
       .skip((page - 1) * limit)
       .limit(limit);
@@ -103,6 +258,7 @@ exports.getAllProducts = async (req, res) => {
       totalPages: Math.ceil(totalProducts / limit),
       currentPage: page,
     });
+
   } catch (error) {
     console.error("Error in getAllProducts:", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });

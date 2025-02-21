@@ -93,10 +93,11 @@ import React, { useState } from "react";
 import OrderProducts from "../../../Components/User/Order/OrderProducts";
 import image from "../../../assets/Bags.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const navigate = useNavigate()
-
+  const { items,subTotal, isLoading } = useSelector((state) => state.cart);
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -162,13 +163,13 @@ const Checkout = () => {
   const grandTotal = Math.max(subtotal - discountAmount + deliveryCharge, 0);
 
   return (
-    <div className="p-10  ">
-      <h2 className="text-2xl font-semibold mb-4">Checkout</h2>
+    <div className="md:p-10 p-5 w-full ">
+      <h2 className="md:text-2xl  font-semibold mb-4">Checkout</h2>
 
-      <div className="flex justify-between  flex-col md:flex-row ">
+      <div className="flex justify-between flex-col items-center md:flex-row gap-5 ">
         {/* Product Listing */}
         <OrderProducts
-          products={products}
+          products={items}
           incrementQuantity={incrementQuantity}
           decrementQuantity={decrementQuantity}
           deleteProduct={deleteProduct}
