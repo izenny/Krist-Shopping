@@ -42,11 +42,11 @@ import React from "react";
 import { HiHomeModern } from "react-icons/hi2";
 import { IoCall } from "react-icons/io5";
 
-const AddressCard = ({ address, onSelect, onDelete, isSelected }) => {
+const AddressCard = ({ address, onSelect,selection , onDelete, isSelected }) => {
   return (
     <div className="border rounded-lg p-4 shadow-md flex flex-col justify-between">
       <div className="flex items-start">
-       { onselect && <input
+       { selection  && <input
           type="checkbox"
           className="mr-3 mt-1 size-5"
           checked={isSelected}

@@ -258,8 +258,8 @@ exports.getCartItems = async (req, res) => {
 
     // Return the cart and any stock errors in the response
     if (stockErrors.length > 0) {
-      return res.status(400).json({
-        success: false,
+      return res.status(200).json({
+        success: true,
         message: "Some items in your cart have insufficient stock",
         cart: {
           id: cart._id, // Returning the cart ID

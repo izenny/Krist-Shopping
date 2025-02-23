@@ -102,11 +102,13 @@
 
 // export default Payment;
 
-
 import React, { useState } from "react";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePayment, MdOutlineRateReview } from "react-icons/md";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setPaymentMethod } from "../../../Redux/OrderSlice";
+import toast from "react-hot-toast";
 
 const Payment = () => {
   const [discountCode, setDiscountCode] = useState("");
@@ -115,7 +117,7 @@ const Payment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const subtotal = 100;
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const applyDiscount = () => {
     if (discountCode === "DISCOUNT10") {
       setDiscountAmount(subtotal * 0.1); // Example discount logic
@@ -125,8 +127,22 @@ const Payment = () => {
   };
 
   const grandTotal = subtotal - discountAmount + deliveryCharge;
-
-  const paymentMethods = ["Credit Card", "Debit Card", "UPI", "Net Banking", "Cash on Delivery"];
+  const dispatch = useDispatch();
+  const paymentMethods = ["COD", "Card", "UPI", "PayPal", "Google Pay", "Apple Pay"];
+  const paymentMethodSelect = async () => {
+    try {
+      if (!selectedPaymentMethod) {
+        toast.error("select your payment method");
+      }
+      setLoading(true);
+      dispatch(setPaymentMethod(selectedPaymentMethod));
+      navigate("/order-summary");
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error("Something went wrong while selecting payment method");
+    }
+  };
 
   return (
     <div className="p-10">
@@ -149,7 +165,9 @@ const Payment = () => {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-4">Select a payment method</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Select a payment method
+            </h2>
             <div>
               {paymentMethods.map((method, index) => (
                 <div key={index} className="mb-2 flex items-center">
@@ -172,13 +190,7 @@ const Payment = () => {
           <div className="mt-5">
             <button
               className="px-4 py-3 md:w-1/3 bg-black hover:scale-105 text-white rounded-md"
-              onClick={() => {
-                if (selectedPaymentMethod) {
-                  navigate("/order-summary"); // Redirect to the next page
-                } else {
-                  alert("Please select a payment method!");
-                }
-              }}
+              onClick={paymentMethodSelect}
             >
               Continue
             </button>

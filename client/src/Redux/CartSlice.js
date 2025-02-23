@@ -3,6 +3,7 @@ import { axiosInstance } from "../Constants/Api";
 import toast from "react-hot-toast";
 
 const initialState = {
+  cart: null,
   items: [],
   subTotal: 0,
   isLoading: false,
@@ -97,6 +98,7 @@ const CartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.cart = action.payload?.cart?.id;
         state.items = action.payload?.cart.items;
         state.subTotal = action.payload?.cart.subTotal;
       })
@@ -109,6 +111,7 @@ const CartSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(addToCart.fulfilled, (state, action) => {
+        state.cart = action.payload.cart.id;
         state.items = action.payload.cart.items;
         state.subTotal = action.payload.cart.subTotal;
         state.isLoading = false;

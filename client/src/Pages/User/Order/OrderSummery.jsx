@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePayment, MdOutlineRateReview } from "react-icons/md";
@@ -5,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import OrderProducts from "../../../Components/User/Order/OrderProducts";
 import image from "../../../assets/Bags.png";
 import AddressCard from "../../../Components/User/Address/AddressCard";
+import { useSelector } from "react-redux";
+import { CheckoutApiCall } from "../../../ApiCall/OrderApoCalls";
+import toast from "react-hot-toast";
 
 const OrderSummary = () => {
   const [discountCode, setDiscountCode] = useState("");
@@ -70,18 +75,48 @@ const OrderSummary = () => {
     setProducts((prev) => prev.filter((product) => product.id !== id));
   };
 
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      phone: "123-456-7890",
-      addressLine: "123 Main Street",
-      city: "New York",
-      state: "NY",
-      zip: "10001",
-    },
-  ]);
+  const { address, paymentMethod, orderItems, totalPrice } = useSelector(
+    (state) => state.order
+  );
+  const { cart } = useSelector((state) => state.cart);
+  console.log(
+    "address,paymentMethod,orderItems,totalPrice",
+    address,
+    paymentMethod,
+    orderItems,
+    totalPrice
+  );
 
+  const PlaceOrder = async () => {
+    try {
+      if (!address || !paymentMethod || orderItems.length === 0) {
+        toast.error("Please complete all order details before placing the order.");
+        return;
+      }
+  
+      const orderData = {
+        cartId : cart,
+        items: orderItems,
+        totalPrice,
+        shippingAddress: address, 
+        paymentMethod,
+      };
+      
+  
+      const response = await CheckoutApiCall(orderData);
+  
+      if (response) {
+        toast.success("Order placed successfully!");
+        navigate("/order-success"); // Navigate to order success page
+      } else {
+        toast.error("Failed to place order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+  
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold mb-4">Payment Method</h2>
@@ -101,11 +136,9 @@ const OrderSummary = () => {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-4">
-              Select a payment method
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">Confirm Your Order</h2>
             <OrderProducts
-              products={products}
+              products={orderItems}
               incrementQuantity={incrementQuantity}
               decrementQuantity={decrementQuantity}
               deleteProduct={deleteProduct}
@@ -113,7 +146,7 @@ const OrderSummary = () => {
           </div>
           <div className="mt-5">
             <h2>Shipping Address</h2>
-            {addresses.map((address) => (
+            {address && (
               <AddressCard
                 key={address.id}
                 address={address}
@@ -121,12 +154,11 @@ const OrderSummary = () => {
                 // onSelect={handleSelectAddress}
                 // onDelete={handleDeleteAddress}
               />
-            ))}
+            )}
           </div>
-          <div className="mt-5">
-            <h2>Payment Method</h2>
-            <p>CoD</p>
-            
+          <div className="mt-5 flex gap-2">
+            <h2>Payment Method : </h2>
+            <p className="font-medium">{paymentMethod}</p>
           </div>
         </div>
 
@@ -135,7 +167,7 @@ const OrderSummary = () => {
           {/* Subtotal */}
           <div className="font-medium flex border-b py-3 justify-between mb-3">
             <h2>Subtotal</h2>
-            <p>${subtotal.toFixed(2)}</p>
+            <p>${totalPrice}</p>
           </div>
 
           {/* Discount Section */}
@@ -179,7 +211,8 @@ const OrderSummary = () => {
           {/* Checkout Button */}
           <div className="w-full flex items-center justify-center">
             <button
-              onClick={() => navigate("/shipping-address")}
+            onClick={PlaceOrder}
+              // onClick={() => navigate("/shipping-address")}
               className="px-10 py-3 bg-black text-white rounded-lg"
             >
               Proceed to Checkout

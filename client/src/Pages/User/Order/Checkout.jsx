@@ -93,11 +93,18 @@ import React, { useState } from "react";
 import OrderProducts from "../../../Components/User/Order/OrderProducts";
 import image from "../../../assets/Bags.png";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { CheckoutApiCall } from "../../../ApiCall/OrderApoCalls";
+import { setOrderItems } from "../../../Redux/OrderSlice";
 
 const Checkout = () => {
-  const navigate = useNavigate()
-  const { items,subTotal, isLoading } = useSelector((state) => state.cart);
+  const navigate = useNavigate();
+  const { cart, items, subTotal, isLoading } = useSelector(
+    (state) => state.cart
+  );
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -121,7 +128,7 @@ const Checkout = () => {
 
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
-  const deliveryCharge = 10; // Example delivery charge
+  const deliveryCharge = 100; // Example delivery charge
 
   const incrementQuantity = (id) => {
     setProducts((prev) =>
@@ -156,12 +163,19 @@ const Checkout = () => {
     }
   };
 
-  const subtotal = products.reduce(
-    (sum, product) => sum + product.quantity * product.price,
-    0
-  );
-  const grandTotal = Math.max(subtotal - discountAmount + deliveryCharge, 0);
+  const grandTotal = Math.max(subTotal - discountAmount + deliveryCharge, 0);
 
+  const proceedToCheckout = async () => {
+    try {
+      setLoading(true);
+      dispatch(setOrderItems({ items, totalPrice: grandTotal }));
+      navigate("/shipping-address");
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error("Something went wrong while checking out");
+    }
+  };
   return (
     <div className="md:p-10 p-5 w-full ">
       <h2 className="md:text-2xl  font-semibold mb-4">Checkout</h2>
@@ -180,7 +194,7 @@ const Checkout = () => {
           {/* Subtotal */}
           <div className="font-medium flex border-b py-3 justify-between mb-3">
             <h2>Subtotal</h2>
-            <p>${subtotal.toFixed(2)}</p>
+            <p>${subTotal.toFixed(2)}</p>
           </div>
 
           {/* Discount Section */}
@@ -222,8 +236,18 @@ const Checkout = () => {
 
           {/* Checkout Button */}
           <div className="w-full flex items-center justify-center">
-            <button onClick={()=>navigate('/shipping-address')} className="px-10 py-3 bg-black text-white rounded-lg">
-              Proceed to Checkout
+            <button
+              onClick={proceedToCheckout}
+              disabled={loading}
+              className={`px-10 py-3 bg-black text-white rounded-lg flex items-center justify-center ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? (
+                <span className="animate-spin border-t-2 border-white rounded-full w-5 h-5"></span>
+              ) : (
+                "Proceed to Checkout"
+              )}
             </button>
           </div>
         </div>

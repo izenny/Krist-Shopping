@@ -87,17 +87,18 @@ const OrderProducts = ({
   deleteProduct,
 }) => {
   return (
-    <div className="py-5 w-full">
+    <div className="py-5 w-full max-h-96">
       <div className="hidden md:grid grid-cols-[5fr,2fr,2fr,2fr,1fr] w-full items-center border-b pb-3 mb-3">
         <h2 className="font-medium ml-4">Product</h2>
         <h2 className="font-medium ml-4">Price</h2>
         <h2 className="font-medium ml-4">Quantity</h2>
         <h2 className="font-medium ml-4">Sub Total</h2>
       </div>
-      {products?.map((product) => (
+      <div className="max-h-80 overflow-y-scroll">
+       {products?.map((product) => (
         <div
           key={product?.product}
-          className="w-full grid md:grid-cols-[5fr,2fr,2fr,2fr,1fr] grid-cols-1 items-center mb-4 border-b py-3 gap-3 md:gap-0"
+          className="w-full  grid md:grid-cols-[5fr,2fr,2fr,2fr,1fr] grid-cols-1 items-center mb-4 border-b py-3 gap-3 md:gap-0"
         >
           <div className="flex items-center">
             <div className="w-16 h-16 md:w-28 md:h-28">
@@ -156,7 +157,7 @@ const OrderProducts = ({
             <p>Subtotal: ${product?.total}</p>
           </div>
         </div>
-      ))}
+      ))} </div>
     </div>
   );
 };
