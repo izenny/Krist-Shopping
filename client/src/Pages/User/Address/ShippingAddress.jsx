@@ -1,21 +1,23 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePayment } from "react-icons/md";
 import { MdOutlineRateReview } from "react-icons/md";
-import AddressForm from "./AddressForm";
 import AddressCard from "../../../Components/User/Address/AddressCard";
-import { fetchUserAddress } from "../../../ApiCall/UserApiCalls";
+import {
+  addUserAddress,
+  fetchUserAddress,
+} from "../../../ApiCall/UserApiCalls";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { setAddress } from "../../../Redux/OrderSlice";
 
+import AddressForm from "../../../Components/User/Address/AddressForm";
 const ShippingAddress = () => {
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const subtotal = 100;
-  const deliveryCharge = 10;
+  const deliveryCharge = 100;
   const grandTotal = subtotal - discountAmount + deliveryCharge;
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState([]);
@@ -70,6 +72,17 @@ const ShippingAddress = () => {
       toast.error("Something went wrong while selecting address");
     }
   };
+  const submitNewAddress = async (formData) => {
+    try {
+      setLoading(true);
+      const response = await addUserAddress(formData);
+      FetchAddress();
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Failed to add addresses:", error);
+    }
+  };
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold mb-4">Shipping Address</h2>
@@ -120,8 +133,9 @@ const ShippingAddress = () => {
             </button>
           </div>
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-2">Add a new address</h2>
-            <AddressForm />
+            {/* <h2 className="text-xl font-semibold mb-2">Add a new address</h2> */}
+
+            <AddressForm onSubmit={submitNewAddress} isLoading={loading} />
           </div>
         </div>
         <div className="mt-10 border  h-fit flex flex-col justify-center p-5 px-10 rounded-lg">

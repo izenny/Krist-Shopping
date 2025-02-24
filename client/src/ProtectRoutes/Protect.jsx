@@ -1,26 +1,3 @@
-// import React from "react";
-// import { use } from "react";
-// import { useSelector } from "react-redux";
-// import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
-
-// const Protect = () => {
-//   const { user, isAuthenticated } = useSelector((state) => state.auth);
-//   console.log(user, isAuthenticated);
-//   const path = useLocation().pathname;
-//   const navigate = useNavigate();
-//   // if (user && isAuthenticated) {
-//   //   return <Outlet />;
-//   // }
-//   if (user && !user.isVerified) {
-//     return <Navigate to="/otp" />;
-//   }
-//   if (user && isAuthenticated && user.isVerified && path === "/login") {
-//     return <Navigate to="/" /> || navigate(-1);
-//   }
-//   return <Outlet />;
-// };
-
-// export default Protect;
 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";

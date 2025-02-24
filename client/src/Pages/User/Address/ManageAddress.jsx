@@ -104,6 +104,7 @@ const ManageAddress = () => {
       setLoading(true);
       const response = await addUserAddress(formData);
       fetchAddresses();
+      setLoading(false);
       setShowAddressForm(false);
     } catch (error) {
       setLoading(false);
@@ -112,8 +113,8 @@ const ManageAddress = () => {
   };
   const handleDeleteAddress = async (address) => {
     try {
-      const response = await deleteUserAddress(address)
-      fetchAddresses()
+      const response = await deleteUserAddress(address);
+      fetchAddresses();
     } catch (error) {
       console.log("failed to delete address", error);
     }
@@ -134,7 +135,11 @@ const ManageAddress = () => {
         <div className="overflow-y-auto max-h-[500px] grid grid-cols-2 gap-2 p-2">
           {addresses.length > 0 ? (
             addresses?.map((address) => (
-              <AddressCard key={address._id} address={address}  onDelete={handleDeleteAddress}/>
+              <AddressCard
+                key={address._id}
+                address={address}
+                onDelete={handleDeleteAddress}
+              />
             ))
           ) : (
             <div>No address added</div>

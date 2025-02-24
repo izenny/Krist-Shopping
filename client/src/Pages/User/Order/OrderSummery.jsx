@@ -8,7 +8,7 @@ import OrderProducts from "../../../Components/User/Order/OrderProducts";
 import image from "../../../assets/Bags.png";
 import AddressCard from "../../../Components/User/Address/AddressCard";
 import { useSelector } from "react-redux";
-import { CheckoutApiCall } from "../../../ApiCall/OrderApoCalls";
+import { CheckoutApiCall } from "../../../ApiCall/OrderApiCalls";
 import toast from "react-hot-toast";
 
 const OrderSummary = () => {

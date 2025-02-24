@@ -366,9 +366,10 @@
 
 import React, { useState, useEffect } from "react";
 import { CiHeart } from "react-icons/ci";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../Redux/CartSlice";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ProductView = ({ product }) => {
   const initialImage = product?.images?.length > 0 ? product.images[0].url : "";
@@ -377,6 +378,8 @@ const ProductView = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
+  const {isAuthenticated} = useSelector((state)=>state.auth)
+  const navigate = useNavigate()
   const colorHexMap = {
     "Burnt Orange": "#CC5500",
     "Slate Blue": "#6A5ACD",
@@ -487,6 +490,7 @@ const ProductView = ({ product }) => {
 
   // Send selected options to ordering system
   const handleAddToCart = async () => {
+    
     if (!selectedColor || !selectedSize) {
       // alert();
       toast.error("Please select a color and size before adding to cart.")
@@ -502,6 +506,7 @@ const ProductView = ({ product }) => {
       toast.error("Selected variant is out of stock.")
       return;
     }
+    !isAuthenticated && navigate('/login');
 
     const orderDetails = {
       product: product._id,

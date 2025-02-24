@@ -81,10 +81,10 @@
 
 // export default MyOrders;
 
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image1 from "../../../assets/Post5.jpg"; // Sample image
 import image2 from "../../../assets/Post5.jpg"; // Sample image
+import { viewOrderApi } from "../../../ApiCall/OrderApiCalls";
 
 const orders = [
   {
@@ -110,6 +110,17 @@ const orders = [
 ];
 
 const MyOrders = () => {
+  const [orderData, setOrderData] = useState([]);
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await viewOrderApi();
+        setOrderData(response);
+      } catch (error) {
+        console.log("failed to fetch orders", error);
+      }
+    };
+  }, []);
   return (
     <div>
       {orders.map((order) => (

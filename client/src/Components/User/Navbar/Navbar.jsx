@@ -361,7 +361,7 @@ const Navbar = () => {
               className="absolute z-20 bg-white border rounded-lg shadow-lg p-4 md:w-2/5 lg:w-2/4 top-16 md:right-36"
             >
               <h3 className="font-semibold mb-2">Your Cart</h3>
-              <MiniCart />
+              <MiniCart onClose={() => setShowMiniCart(false)} />
             </div>
           )}
           {isAuthenticated && (

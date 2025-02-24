@@ -103,11 +103,12 @@ import Kids from "../../../assets/Kids.png";
 import Traditional from "../../../assets/Traditional.png";
 import Bags from "../../../assets/Bags.png";
 import Jewelry from "../../../assets/Jewelry.png";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { id: 1, name: "Western Wear", image: Western },
   { id: 2, name: "Ethnic Wear", image: Ethnic },
-  { id: 3, name: "Casual Wear", image: Casual },
+  { id: 3, name: "Casual Shirts", image: Casual },
   { id: 4, name: "Sports Wear", image: Sports },
   { id: 5, name: "Formal Wear", image: Formal },
   { id: 6, name: "Party Wear", image: Party },
@@ -127,6 +128,10 @@ const CategoryCard = ({ currentIndex, categoriesPerPage }) => {
     currentIndex,
     currentIndex + categoriesPerPage
   );
+const navigate = useNavigate()
+  const handleCategory = (category)=>{
+    navigate(`/product-listing?category=${category}`);
+  } 
 
   return (
     <div className="w-full h-full flex flex-wrap justify-center items-center gap-10">
@@ -146,7 +151,7 @@ const CategoryCard = ({ currentIndex, categoriesPerPage }) => {
 
           {/* Button Positioned Slightly Above Bottom */}
           <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-            <button className="bg-white w-[80%] px-4 py-2 rounded-md text-black font-semibold hover:bg-gray-100 hover:scale-105 transition-transform duration-300">
+            <button onClick={()=>handleCategory(category.name)} className="bg-white w-[80%] px-4 py-2 rounded-md text-black font-semibold hover:bg-gray-100 hover:scale-105 transition-transform duration-300">
               {category.name}
             </button>
           </div>

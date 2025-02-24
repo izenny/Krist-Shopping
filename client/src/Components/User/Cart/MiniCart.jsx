@@ -126,14 +126,14 @@
 
 // export default MiniCart;
 
-
 import React, { useState } from "react";
 import OrderProducts from "../Order/OrderProducts";
 import image from "../../../assets/Bags.png";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrderItems } from "../../../Redux/OrderSlice";
 
-const MiniCart = () => {
+const MiniCart = ({ onClose }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([
     {
@@ -156,9 +156,11 @@ const MiniCart = () => {
     },
   ]);
 
-  const { items,subTotal, isLoading } = useSelector((state) => state.cart);
+  const { items, subTotal, isLoading } = useSelector((state) => state.cart);
   const { isAuthenticated } = useSelector((state) => state.auth);
-
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   const incrementQuantity = (id) => {
     setProducts((prev) =>
@@ -184,13 +186,33 @@ const MiniCart = () => {
     setProducts((prev) => prev.filter((product) => product.id !== id));
   };
 
+  const viewCart = () => {
+    if (onClose) onClose();
+    navigate("/checkout");
+  };
+  
+  const deliveryCharge = 100;
+  const grandTotal = Math.max(subTotal - discountAmount + deliveryCharge, 0);
+  const proceedToCheckout = async () => {
+    try {
+      setLoading(true);
+      dispatch(setOrderItems({ items, totalPrice: grandTotal }));
+      if (onClose) onClose();
+      navigate("/shipping-address");
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error("Something went wrong while checking out");
+    }
+  };
   return (
     <div>
       {isAuthenticated ? (
-        items?.length > 0 ?  (
+        items?.length > 0 ? (
           <div className="w-full">
             <h2>
-              Your cart has {items?.length} {items?.length === 1 ? "item" : "items"}
+              Your cart has {items?.length}{" "}
+              {items?.length === 1 ? "item" : "items"}
             </h2>
             <OrderProducts
               products={items}
@@ -205,13 +227,13 @@ const MiniCart = () => {
               </div>
               <div className="flex flex-col items-center px-5 gap-2 w-full mt-4">
                 <button
-                  onClick={() => navigate("/checkout")}
+                  onClick={viewCart}
                   className="px-4 py-2 w-full rounded-md bg-black text-white"
                 >
                   View Cart
                 </button>
                 <button
-                  onClick={() => navigate("/shipping-address")}
+                  onClick={proceedToCheckout}
                   className="px-4 py-2 w-full rounded-md bg-black text-white"
                 >
                   Checkout

@@ -95,7 +95,7 @@ import image from "../../../assets/Bags.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { CheckoutApiCall } from "../../../ApiCall/OrderApoCalls";
+import { CheckoutApiCall } from "../../../ApiCall/OrderApiCalls";
 import { setOrderItems } from "../../../Redux/OrderSlice";
 
 const Checkout = () => {
