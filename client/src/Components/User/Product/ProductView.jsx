@@ -490,24 +490,25 @@ const ProductView = ({ product }) => {
 
   // Send selected options to ordering system
   const handleAddToCart = async () => {
-    
     if (!selectedColor || !selectedSize) {
-      // alert();
-      toast.error("Please select a color and size before adding to cart.")
+      toast.error("Please select a color and size before adding to cart.");
       return;
     }
-
+  
     const selectedStock = product.stock.find(
       (item) => item.color === selectedColor && item.size === selectedSize
     );
-
+  
     if (!selectedStock || selectedStock.quantity === 0) {
-      // alert("Selected variant is out of stock.");
-      toast.error("Selected variant is out of stock.")
+      toast.error("Selected variant is out of stock.");
       return;
     }
-    !isAuthenticated && navigate('/login');
-
+  
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+  
     const orderDetails = {
       product: product._id,
       name: product.name,
@@ -516,10 +517,19 @@ const ProductView = ({ product }) => {
       size: selectedSize,
       quantity: quantity,
     };
-    await dispatch(addToCart(orderDetails));
-    console.log("Adding to cart:", orderDetails);
-    // alert("Product added to cart successfully!");
+  
+    try {
+      await dispatch(addToCart(orderDetails));
+      console.log("Adding to cart:", orderDetails);
+      
+      // Navigate to checkout after successful addition
+      navigate('/checkout');
+    } catch (error) {
+      toast.error("Failed to add item to cart.");
+      console.error("Error adding to cart:", error);
+    }
   };
+  
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-8 p-5">

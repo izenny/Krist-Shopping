@@ -107,7 +107,7 @@ const OrderSummary = () => {
   
       if (response) {
         toast.success("Order placed successfully!");
-        navigate("/order-success"); // Navigate to order success page
+        navigate("/"); 
       } else {
         toast.error("Failed to place order. Please try again.");
       }

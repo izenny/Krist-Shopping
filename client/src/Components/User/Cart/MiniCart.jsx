@@ -132,6 +132,7 @@ import image from "../../../assets/Bags.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrderItems } from "../../../Redux/OrderSlice";
+import { deleteCartItem, UpdateCart } from "../../../Redux/CartSlice";
 
 const MiniCart = ({ onClose }) => {
   const navigate = useNavigate();
@@ -162,35 +163,56 @@ const MiniCart = ({ onClose }) => {
   const dispatch = useDispatch();
   const [discountAmount, setDiscountAmount] = useState(0);
 
-  const incrementQuantity = (id) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      )
-    );
+  const incrementQuantity = async (product) => {
+    try {
+      const cartData = {
+        product: product.product,
+        quantity: product.quantity + 1, // Increment quantity
+        color: product.color,
+        size: product.size,
+      };
+
+      await dispatch(UpdateCart(cartData));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const decrementQuantity = async (product) => {
+    if (product.quantity > 1) {
+      try {
+        const cartData = {
+          product: product.product,
+          quantity: product.quantity - 1,
+          color: product.color,
+          size: product.size,
+        };
+
+        await dispatch(UpdateCart(cartData));
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  const decrementQuantity = (id) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id && product.quantity > 1
-          ? { ...product, quantity: product.quantity - 1 }
-          : product
-      )
-    );
-  };
-
-  const deleteProduct = (id) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id));
+  const deleteProduct = async (product) => {
+    try {
+      const cartData = {
+        product: product.product,
+        color: product.color,
+        size: product.size,
+      };
+  
+      await dispatch(deleteCartItem(cartData));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const viewCart = () => {
     if (onClose) onClose();
     navigate("/checkout");
   };
-  
+
   const deliveryCharge = 100;
   const grandTotal = Math.max(subTotal - discountAmount + deliveryCharge, 0);
   const proceedToCheckout = async () => {
@@ -216,9 +238,9 @@ const MiniCart = ({ onClose }) => {
             </h2>
             <OrderProducts
               products={items}
-              incrementQuantity={incrementQuantity}
-              decrementQuantity={decrementQuantity}
-              deleteProduct={deleteProduct}
+              incrementQuantity={(product) => incrementQuantity(product)}
+              decrementQuantity={(product) => decrementQuantity(product)}
+              deleteProduct={(product) => deleteProduct(product)}
             />
             <div>
               <div className="flex px-5 justify-between">

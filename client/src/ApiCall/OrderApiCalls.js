@@ -3,7 +3,7 @@ import { axiosInstance } from "../Constants/Api";
 
 export const CheckoutApiCall = async (orderData) => {
   try {
-    // console.log(orderData);
+    console.log(orderData);
 
     const response = await axiosInstance.post(`order/placeorder`, orderData);
     console.log(response.data);
@@ -22,8 +22,9 @@ export const CheckoutApiCall = async (orderData) => {
 export const viewOrderApi = async () => {
   try {
     const response = await axiosInstance.get("order/view");
-    console.log(response.data);
+    console.log("orders view", response.data);
+    return response.data
   } catch (error) {
-    console.log("failed to fetch orders",error);
+    console.log("failed to fetch orders", error);
   }
 };

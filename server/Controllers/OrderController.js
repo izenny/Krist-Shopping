@@ -3,113 +3,152 @@ const Cart = require("../Models/CartSchema");
 const Product = require("../Models/ProductSchema"); // Import Product model
 
 // Create a new order and update stock after successful order placement
+// exports.createOrder = async (req, res) => {
+//   try {
+//     const user = req.user.id;
+//     const { cartId, items, totalPrice, shippingAddress, paymentMethod } = req.body;
+
+//     console.log("Request Body:", req.body); // Debugging log
+
+//     let cart = null;
+
+//     // Step 1: If cartId is provided, find the user's cart
+//     if (cartId) {
+//       cart = await Cart.findById(cartId);
+//       if (!cart || cart.items.length === 0) {
+//         return res.status(400).json({ message: "No items in cart to place an order" });
+//       }
+//     }
+
+//     const orderItems = items; // Use destructured 'items' instead of 'orderData.items'
+
+//     // Step 2 & 3: Validate stock and prepare stock updates
+//     let productUpdates = [];
+
+//     for (const item of orderItems) {
+//       const product = await Product.findById(item.product);
+//       if (!product) {
+//         return res.status(404).json({ message: `Product not found: ${item.name}` });
+//       }
+
+//       // Find stock entry that matches the size & color
+//       const stockEntry = product.stock.find(
+//         (s) => s.size === item.size && s.color === item.color
+//       );
+
+//       if (!stockEntry || stockEntry.quantity < item.quantity) {
+//         return res.status(400).json({ message: `Insufficient stock for ${item.name}` });
+//       }
+
+//       // Reduce stock & store the update
+//       stockEntry.quantity -= item.quantity;
+//       productUpdates.push(product.save());
+//     }
+
+//     // Step 4: Create a new order
+//     const newOrder = new Order({
+//       user,
+//       items: orderItems,
+//       totalPrice: totalPrice || (cart ? cart.subTotal + 100 : 0), // Calculate if not provided
+//       status: "Pending",
+//       shippingAddress,
+//       paymentMethod,
+//       paymentStatus: "Pending",
+//     });
+
+//     await newOrder.save();
+
+//     // Step 5: Update stock in DB after order creation
+//     await Promise.all(productUpdates);
+
+//     // Step 6: If cartId is provided, clear the user's cart
+//     if (cartId) {
+//       await Cart.findByIdAndUpdate(cartId, { $set: { items: [] } });
+//     }
+
+//     return res.status(201).json({
+//       message: "Order placed successfully, stock updated",
+//       order: newOrder,
+//     });
+//   } catch (error) {
+//     console.error("Error creating order:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+// Create separate orders for each product in the cart
 exports.createOrder = async (req, res) => {
   try {
     const user = req.user.id;
-    const { cartId, items, totalPrice, shippingAddress, paymentMethod } = req.body;
+    const { cartId, items, shippingAddress, paymentMethod } = req.body;
 
     console.log("Request Body:", req.body); // Debugging log
 
-    let cart = null;
-
-    // Step 1: If cartId is provided, find the user's cart
-    if (cartId) {
-      cart = await Cart.findById(cartId);
-      if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ message: "No items in cart to place an order" });
-      }
+    if (!items || items.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No items in cart to place an order" });
     }
 
-    const orderItems = items; // Use destructured 'items' instead of 'orderData.items'
+    let createdOrders = [];
 
-    // Step 2 & 3: Validate stock and prepare stock updates
-    let productUpdates = [];
-
-    for (const item of orderItems) {
+    for (const item of items) {
       const product = await Product.findById(item.product);
       if (!product) {
-        return res.status(404).json({ message: `Product not found: ${item.name}` });
+        return res
+          .status(404)
+          .json({ message: `Product not found: ${item.name}` });
       }
 
-      // Find stock entry that matches the size & color
+      // Find stock entry matching size & color
       const stockEntry = product.stock.find(
         (s) => s.size === item.size && s.color === item.color
       );
 
       if (!stockEntry || stockEntry.quantity < item.quantity) {
-        return res.status(400).json({ message: `Insufficient stock for ${item.name}` });
+        return res
+          .status(400)
+          .json({ message: `Insufficient stock for ${item.name}` });
       }
 
-      // Reduce stock & store the update
+      // Reduce stock quantity
       stockEntry.quantity -= item.quantity;
-      productUpdates.push(product.save());
+      await product.save();
+
+      // Create a separate order for each product
+      const newOrder = new Order({
+        user,
+        items: [item], // Single product in each order
+        totalPrice: item.total || item.price * item.quantity + 100, // Add shipping if needed
+        status: "Pending",
+        shippingAddress,
+        paymentMethod,
+        paymentStatus: "Pending",
+      });
+
+      await newOrder.save();
+      createdOrders.push(newOrder);
     }
 
-    // Step 4: Create a new order
-    const newOrder = new Order({
-      user,
-      items: orderItems,
-      totalPrice: totalPrice || (cart ? cart.subTotal + 100 : 0), // Calculate if not provided
-      status: "Pending",
-      shippingAddress,
-      paymentMethod,
-      paymentStatus: "Pending",
-    });
-
-    await newOrder.save();
-
-    // Step 5: Update stock in DB after order creation
-    await Promise.all(productUpdates);
-
-    // Step 6: If cartId is provided, clear the user's cart
+    // If a cartId is provided, clear the cart after all orders are created
     if (cartId) {
       await Cart.findByIdAndUpdate(cartId, { $set: { items: [] } });
     }
 
     return res.status(201).json({
-      message: "Order placed successfully, stock updated",
-      order: newOrder,
+      message: "Orders placed successfully, stock updated",
+      orders: createdOrders,
     });
   } catch (error) {
-    console.error("Error creating order:", error);
+    console.error("Error creating orders:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
-
-//add to order from cartid
-
-// exports.addToOrderByCartId = async(req,res)=>{
-//   try {
-//     const user = req.user._id;
-//     const {cart}= req.params.cart
-
-//     if(!user || !cart){
-//       return res.status(400).json({success:false, message :"cart id is required"})
-//     }
-//     const cartItems = await Cart.findById(cart)
-//     if(!cartItems){
-//       return res.status(400).json({success:false, message :"cart not found"})
-//     }
-
-//     const order = new Order({
-//       user,
-//       items:cartItems.items
-
-//     })
-
-//   } catch (error) {
-//     console.error("Error adding  order:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// }
-
-// Get orders by user
 exports.getOrdersByUser = async (req, res) => {
-  const { user } = req;
+  const user = req.user;
   try {
-    const orders = await Order.find({ user }).populate("items.product");
+    const orders = await Order.find({ user });
 
     if (orders.length === 0) {
       return res.status(404).json({ message: "No orders found" });

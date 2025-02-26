@@ -132,31 +132,52 @@ exports.createCart = async (req, res) => {
 // update quantity of cart items
 
 exports.updateCart = async (req, res) => {
-  const { user, product, quantity, color, size } = req.body;
+  const { product, quantity, color, size } = req.body;
+  const user = req.user._id;
+
   if (!user || !product || !quantity || quantity < 1) {
     return res
       .status(400)
-      .json({ success: false, message: "Please fill in all fields" });
+      .json({ success: false, message: "Please fill in all fields correctly" });
   }
+
   try {
     const cart = await Cart.findOne({ user });
     if (!cart) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Cart not found" });
+      return res.status(404).json({ success: false, message: "Cart not found" });
     }
-    const itemIndex = cart.items.findIndex((item) => item.product == product);
+
+    // Find item in cart based on product, color, and size
+    const itemIndex = cart.items.findIndex(
+      (item) => item.product.toString() === product && item.color === color && item.size === size
+    );
+
     if (itemIndex > -1) {
+      const productData = await Product.findById(product);
+      if (!productData) {
+        return res.status(404).json({ success: false, message: "Product not found" });
+      }
+
+      // Find stock for the selected variant
+      const selectedStock = productData.stock.find(
+        (item) => item.color === color && item.size === size
+      );
+
+      if (!selectedStock || selectedStock.quantity < quantity) {
+        return res.status(400).json({ success: false, message: "Insufficient stock available" });
+      }
+
+      // Update cart item quantity and total
       cart.items[itemIndex].quantity = quantity;
-      cart.items[itemIndex].total =
-        cart.items[itemIndex].quantity * cart.items[itemIndex].price;
+      cart.items[itemIndex].total = quantity * cart.items[itemIndex].price;
+
+      // Update cart subtotal
       cart.subTotal = cart.items.reduce((acc, item) => acc + item.total, 0);
+
       await cart.save();
-      res.status(200).json({ success: true, message: "Cart updated", cart });
+      return res.status(200).json({ success: true, message: "Cart updated", cart });
     } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Item not found in cart" });
+      return res.status(404).json({ success: false, message: "Item not found in cart" });
     }
   } catch (error) {
     console.error("Error in updateCart:", error.message);
@@ -164,38 +185,52 @@ exports.updateCart = async (req, res) => {
   }
 };
 
-//remove item from cart
 
-exports.removeItem = async (req, res) => {
-  const { user, product } = req.body;
-  if (!user || !product) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Please fill in all fields" });
+exports.deleteCartItem = async (req, res) => {
+  const { product, color, size } = req.body;
+  const user = req.user?._id; // Ensure user exists
+
+  // Check if required fields are present
+  if (!user || !product || !color || !size) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
   }
+
   try {
     const cart = await Cart.findOne({ user });
     if (!cart) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Cart not found" });
+      return res.status(404).json({ success: false, message: "Cart not found" });
     }
-    const itemIndex = cart.items.findIndex((item) => item.product == product);
-    if (itemIndex > -1) {
-      cart.items.splice(itemIndex, 1);
-      cart.subTotal = cart.items.reduce((acc, item) => acc + item.total, 0);
-      await cart.save();
-      res.status(200).json({ success: true, message: "Item removed", cart });
-    } else {
-      res
-        .status(404)
-        .json({ success: false, message: "Item not found in cart" });
+
+    console.log("Before deletion, cart items:", cart.items); // Debugging
+
+    // Check if product exists in cart before filtering
+    const itemIndex = cart.items.findIndex(
+      (item) =>
+        item.product?.toString() === product?.toString() &&
+        item.color === color &&
+        item.size === size
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ success: false, message: "Item not found in cart" });
     }
+
+    // Remove the item from the cart
+    cart.items.splice(itemIndex, 1);
+
+    // Recalculate subtotal
+    cart.subTotal = cart.items.reduce((acc, item) => acc + item.total, 0);
+    await cart.save();
+
+    console.log("After deletion, cart items:", cart.items); // Debugging
+
+    return res.status(200).json({ success: true, message: "Item removed from cart", cart });
   } catch (error) {
-    console.error("Error in removeItem:", error.message);
+    console.error("Error in deleteCartItem:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 // Get cart items
 

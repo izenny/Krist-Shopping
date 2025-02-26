@@ -1,94 +1,3 @@
-// import React, { useState } from "react";
-// import OrderProducts from "../../../Components/User/Order/OrderProducts";
-// import image from "../../../assets/Bags.png";
-// const Checkout = () => {
-//   const [products, setProducts] = useState([
-//       {
-//         id: 1,
-//         name: "Wireless Mouse",
-//         description: "Ergonomic wireless mouse with adjustable DPI",
-//         quantity: 2,
-//         price: 25.99,
-//         imageUrl: image,
-//         Size: "S",
-//       },
-//       {
-//         id: 2,
-//         name: "Gaming Keyboard",
-//         description: "RGB mechanical keyboard with blue switches",
-//         quantity: 1,
-//         price: 79.99,
-//         imageUrl: image,
-//         Size: "L",
-//       },
-//     ]);
-
-//     const incrementQuantity = (id) => {
-//       setProducts((prev) =>
-//         prev.map((product) =>
-//           product.id === id
-//             ? { ...product, quantity: product.quantity + 1 }
-//             : product
-//         )
-//       );
-//     };
-
-//     const decrementQuantity = (id) => {
-//       setProducts((prev) =>
-//         prev.map((product) =>
-//           product.id === id && product.quantity > 1
-//             ? { ...product, quantity: product.quantity - 1 }
-//             : product
-//         )
-//       );
-//     };
-
-//     const deleteProduct = (id) => {
-//       setProducts((prev) => prev.filter((product) => product.id !== id));
-//     };
-
-//     const totalQuantity = products.reduce((sum, product) => sum + product.quantity, 0);
-//     const subtotal = products.reduce((sum, product) => sum + product.quantity * product.price, 0);
-//   return (
-//     <div className="w-full p-2">
-//       <h2>Checkout</h2>
-//       <div className="flex ">
-//       <OrderProducts
-//           products={products}
-//           incrementQuantity={incrementQuantity}
-//           decrementQuantity={decrementQuantity}
-//           deleteProduct={deleteProduct}
-//         />
-//         <div>
-//           <div>
-//             <div className="font-medium flex justify-between">
-//               <h2>Subtotal</h2>
-//               <p>500$</p>
-//             </div>
-//             <div>
-//               <p>Enter Discount Code</p>
-//               <div className="border"><input type="text" className="h-full" /><button className="h-full px-2">Apply</button></div>
-//             </div>
-//             <div className="font-medium flex justify-between">
-//               <h2>Delivery Charge</h2>
-//               <p>500$</p>
-//             </div>
-//             <div className="font-medium flex justify-between">
-//               <h2>Grand Total</h2>
-//               <p>500$</p>
-//             </div>
-//             <div>
-//               <button>Proceed to Checkout</button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Checkout;
-
 import React, { useState } from "react";
 import OrderProducts from "../../../Components/User/Order/OrderProducts";
 import image from "../../../assets/Bags.png";
@@ -97,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { CheckoutApiCall } from "../../../ApiCall/OrderApiCalls";
 import { setOrderItems } from "../../../Redux/OrderSlice";
+import { deleteCartItem, UpdateCart } from "../../../Redux/CartSlice";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -128,32 +38,53 @@ const Checkout = () => {
 
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
-  const deliveryCharge = 100; // Example delivery charge
+  const deliveryCharge = 100;
 
-  const incrementQuantity = (id) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      )
-    );
+  const incrementQuantity = async (product) => {
+    try {
+      const cartData = {
+        product: product.product,
+        quantity: product.quantity + 1,
+        color: product.color,
+        size: product.size,
+      };
+
+      await dispatch(UpdateCart(cartData));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const decrementQuantity = (id) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id && product.quantity > 1
-          ? { ...product, quantity: product.quantity - 1 }
-          : product
-      )
-    );
+  const decrementQuantity = async (product) => {
+    if (product.quantity > 1) {
+      try {
+        const cartData = {
+          product: product.product,
+          quantity: product.quantity - 1,
+          color: product.color,
+          size: product.size,
+        };
+
+        await dispatch(UpdateCart(cartData));
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  const deleteProduct = (id) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id));
+  const deleteProduct = async (product) => {
+    try {
+      const cartData = {
+        product: product.product,
+        color: product.color,
+        size: product.size,
+      };
+  
+      await dispatch(deleteCartItem(cartData));
+    } catch (error) {
+      console.log(error);
+    }
   };
-
   const applyDiscount = () => {
     if (discountCode === "SAVE10") {
       setDiscountAmount(10); // Apply a flat discount of $10
@@ -184,9 +115,9 @@ const Checkout = () => {
         {/* Product Listing */}
         <OrderProducts
           products={items}
-          incrementQuantity={incrementQuantity}
-          decrementQuantity={decrementQuantity}
-          deleteProduct={deleteProduct}
+          incrementQuantity={(product) => incrementQuantity(product)}
+          decrementQuantity={(product) => decrementQuantity(product)}
+          deleteProduct={(product) => deleteProduct(product)}
         />
 
         {/* Summary Section */}
