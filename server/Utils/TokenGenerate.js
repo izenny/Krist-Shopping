@@ -9,7 +9,7 @@ exports.generateToken = (res, userId) => {
   res.cookie("token", token, {
     httpOnly: true, // Prevent access via JavaScript
     secure: process.env.NODE_ENV === "production", // Ensure HTTPS in production
-    sameSite: "strict", // Prevent CSRF attacks
+    sameSite: "None", 
     maxAge: 5 * 60 * 60 * 1000, // 5 hours (comment fixed)
   });
 
