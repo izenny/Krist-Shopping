@@ -9,11 +9,11 @@
 // });
 
 
-export const BaseURL = "https://krist-shopping-server.onrender.com/api/"
+export const BaseURL = "https://krist-shopping-server.onrender.com/api"
 
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://krist-shopping-server.onrender.com/api/",
+  baseURL: "https://krist-shopping-server.onrender.com/api",
   withCredentials: true,
 });
