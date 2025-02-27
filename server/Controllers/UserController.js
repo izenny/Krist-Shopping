@@ -1,22 +1,6 @@
 const User = require("../Models/UserSchema");
 const Address = require("../Models/AddressSchema");
-// Get Userdata by ID
 
-// exports.getUserById = async (req, res) => {
-//   const { _id } = req.user;
-//   try {
-//     const user = await User.findById( _id).select("-password");
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     const address = await Address.find({ user: _id }).select("addresses");
-//     user.address = address;
-//     res.status(200).json(user);
-//   } catch (error) {
-//     console.error("Error in getUserById:", error.message);
-//     res.status(500).json({ success: false, message: "Internal server error" });
-//   }
-// };
 exports.getUserById = async (req, res) => {
   const { _id } = req.user;
   try {
