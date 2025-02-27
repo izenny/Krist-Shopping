@@ -2,20 +2,18 @@ const JWT = require("jsonwebtoken");
 
 exports.generateToken = (res, userId) => {
   const token = JWT.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "5h", // Use "5h" for clarity instead of "5hr"
+    expiresIn: "5h",
   });
 
-  // Set the cookie
   res.cookie("token", token, {
-    httpOnly: true, // Prevent access via JavaScript
-    secure: process.env.NODE_ENV === "production", // Ensure HTTPS in production
-    sameSite: "None", 
-    maxAge: 5 * 60 * 60 * 1000, // 5 hours (comment fixed)
+    httpOnly: true,  // Prevent JavaScript access (secure)
+    secure: process.env.NODE_ENV === "production", // Enforce HTTPS in production
+    sameSite: "None",  // REQUIRED for cross-site cookies
+    maxAge: 5 * 60 * 60 * 1000, // 5 hours
   });
 
-  return token; // Ensure this is used properly in the calling function
+  return token;
 };
-
 
 
 exports.GenerateOtp = () => { // Fixed function name
